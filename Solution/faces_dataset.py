@@ -30,13 +30,13 @@ class FacesDataset(Dataset):
         if index < nm_of_real_imgs:
             with Image.open(os.path.join(self.root_path,'real',self.real_image_names[index])) as im:
                 if im:
-                    return (self.transform(im), self.real_image_names[index])
+                    return (self.transform(im), 0)
                 else:
                     print("None value")
         else:
             with Image.open(os.path.join(self.root_path, 'fake', self.fake_image_names[index-nm_of_real_imgs])) as im:
                 if im:
-                    return (self.transform(im), self.fake_image_names[index-nm_of_real_imgs])
+                    return (self.transform(im), 1)
                 else:
                     print("None value")
 
