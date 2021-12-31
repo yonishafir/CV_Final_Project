@@ -58,9 +58,27 @@ class Trainer:
                                       self.batch_size,
                                       shuffle=True)
         print_every = int(len(train_dataloader) / 10)
-
+        # Added by me ##
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         for batch_idx, (inputs, targets) in enumerate(train_dataloader):
             """INSERT YOUR CODE HERE."""
+            inputs, targets = inputs.to(device), targets.to(device) 
+            # 1. zero the gradients
+            self.optimizer.zero_grad()
+            # 2. compute a forward pass
+            pred = self.model(inputs)
+            # 3. compute the loss w.r.t to the criterion 
+            loss = self.criterion(pred, targets)
+            # 4. compute a backward pass
+            loss.backward()
+            # 5. step optimizer
+            self.optimizer.step()
+            # 6. update the average loss and accuracy
+            total_loss += loss.item()
+            nof_samples += 1 
+            avg_loss = total_loss/(nof_samples)
+            # FIXME[yoni] accuaracy not calculated properlly
+            accuracy += (pred.argmax(1) == targets).type(torch.float).sum().item()
             if batch_idx % print_every == 0 or \
                     batch_idx == len(train_dataloader) - 1:
                 print(f'Epoch [{self.epoch:03d}] | Loss: {avg_loss:.3f} | '
@@ -90,9 +108,24 @@ class Trainer:
         nof_samples = 0
         correct_labeled_samples = 0
         print_every = max(int(len(dataloader) / 10), 1)
+        
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         for batch_idx, (inputs, targets) in enumerate(dataloader):
             """INSERT YOUR CODE HERE."""
+            inputs, targets = inputs.to(device), targets.to(device) 
+
+            # 1. compute a forward pass under a torch.no grad() context manager. 
+            with torch.no_grad():
+                pred = self.model(inputs)
+            # 2. compute the loss w.r.t to the criterion
+            eval_loss = self.criterion(pred, targets)
+            # 3. update the average loss and accuracy
+            total_loss += eval_loss.item()
+            nof_samples += 1 
+            avg_loss = total_loss/(nof_samples)
+            # FIXME[yoni] accuaracy not calculated properlly
+            accuracy += (pred.argmax(1) == targets).type(torch.float).sum().item()
             if batch_idx % print_every == 0 or batch_idx == len(dataloader) - 1:
                 print(f'Epoch [{self.epoch:03d}] | Loss: {avg_loss:.3f} | '
                       f'Acc: {accuracy:.2f}[%] '
