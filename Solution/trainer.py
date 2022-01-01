@@ -58,8 +58,10 @@ class Trainer:
                                       self.batch_size,
                                       shuffle=True)
         print_every = int(len(train_dataloader) / 10)
+
         # Added by me ##
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+       
         for batch_idx, (inputs, targets) in enumerate(train_dataloader):
             """INSERT YOUR CODE HERE."""
             inputs, targets = inputs.to(device), targets.to(device) 
@@ -75,10 +77,15 @@ class Trainer:
             self.optimizer.step()
             # 6. update the average loss and accuracy
             total_loss += loss.item()
-            nof_samples += 1 
-            avg_loss = total_loss/(nof_samples)
+            
+            nof_samples += len(inputs) 
+            correct_labeled_samples += (pred.argmax(1) == targets).type(torch.int).sum().item()
+
+            avg_loss = total_loss/(batch_idx+1)#*self.batch_size)
+
             # FIXME[yoni] accuaracy not calculated properlly
-            accuracy += (pred.argmax(1) == targets).type(torch.float).sum().item()
+            accuracy = 100 * (correct_labeled_samples/nof_samples)
+
             if batch_idx % print_every == 0 or \
                     batch_idx == len(train_dataloader) - 1:
                 print(f'Epoch [{self.epoch:03d}] | Loss: {avg_loss:.3f} | '
@@ -122,10 +129,15 @@ class Trainer:
             eval_loss = self.criterion(pred, targets)
             # 3. update the average loss and accuracy
             total_loss += eval_loss.item()
-            nof_samples += 1 
-            avg_loss = total_loss/(nof_samples)
+
+            nof_samples += len(inputs) 
+            correct_labeled_samples += (pred.argmax(1) == targets).type(torch.int).sum().item()
+
+            avg_loss = total_loss/(batch_idx+1)#*self.batch_size)
+
             # FIXME[yoni] accuaracy not calculated properlly
-            accuracy += (pred.argmax(1) == targets).type(torch.float).sum().item()
+            accuracy = 100 * (correct_labeled_samples/nof_samples)
+            
             if batch_idx % print_every == 0 or batch_idx == len(dataloader) - 1:
                 print(f'Epoch [{self.epoch:03d}] | Loss: {avg_loss:.3f} | '
                       f'Acc: {accuracy:.2f}[%] '
