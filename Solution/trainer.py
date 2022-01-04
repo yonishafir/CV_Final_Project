@@ -59,9 +59,10 @@ class Trainer:
                                       shuffle=True)
         print_every = int(len(train_dataloader) / 10)
 
-        # Added by me ##
+        # Added by me ## FIXME: Delete if not needed
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-       
+        # Added by me ##
+
         for batch_idx, (inputs, targets) in enumerate(train_dataloader):
             """INSERT YOUR CODE HERE."""
             inputs, targets = inputs.to(device), targets.to(device) 
@@ -125,18 +126,18 @@ class Trainer:
             # 1. compute a forward pass under a torch.no grad() context manager. 
             with torch.no_grad():
                 pred = self.model(inputs)
-            # 2. compute the loss w.r.t to the criterion
-            eval_loss = self.criterion(pred, targets)
-            # 3. update the average loss and accuracy
-            total_loss += eval_loss.item()
+                # 2. compute the loss w.r.t to the criterion
+                eval_loss = self.criterion(pred, targets)
+                # 3. update the average loss and accuracy
+                total_loss += eval_loss.item()
 
-            nof_samples += len(inputs) 
-            correct_labeled_samples += (pred.argmax(1) == targets).type(torch.int).sum().item()
+                nof_samples += len(inputs) 
+                correct_labeled_samples += (pred.argmax(1) == targets).type(torch.int).sum().item()
 
-            avg_loss = total_loss/(batch_idx+1)#*self.batch_size)
+                avg_loss = total_loss/(batch_idx+1)#*self.batch_size)
 
-            # FIXME[yoni] accuaracy not calculated properlly
-            accuracy = 100 * (correct_labeled_samples/nof_samples)
+                # FIXME[yoni] accuaracy not calculated properlly
+                accuracy = 100 * (correct_labeled_samples/nof_samples)
             
             if batch_idx % print_every == 0 or batch_idx == len(dataloader) - 1:
                 print(f'Epoch [{self.epoch:03d}] | Loss: {avg_loss:.3f} | '
