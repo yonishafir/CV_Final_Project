@@ -1,10 +1,12 @@
 """Plot ROC and DET curves."""
 import os
 import argparse
+from scipy.stats.stats import mode
 
 import torch
 import scipy.stats as sp
 import matplotlib.pyplot as plt
+from torch.nn.functional import softmax
 
 from sklearn import metrics
 from torch.utils.data import DataLoader
@@ -24,11 +26,20 @@ def parse_args():
         Namespace with model name, checkpoint path and dataset name.
     """
     parser = argparse.ArgumentParser(description='Analyze network performance.')
+    # parser.add_argument('--model', '-m',
+    #                     default='XceptionBased', type=str,
+    #                     help='Model name: SimpleNet or XceptionBased.')
+    # parser.add_argument('--checkpoint_path', '-cpp',
+    #                     default='checkpoints/XceptionBased.pt', type=str,
+    #                     help='Path to model checkpoint.')
+    # parser.add_argument('--dataset', '-d',
+    #                     default='fakes_dataset', type=str,
+    #                     help='Dataset: fakes_dataset or synthetic_dataset.')
     parser.add_argument('--model', '-m',
-                        default='XceptionBased', type=str,
+                        default='SimpleNet', type=str,
                         help='Model name: SimpleNet or XceptionBased.')
     parser.add_argument('--checkpoint_path', '-cpp',
-                        default='checkpoints/XceptionBased.pt', type=str,
+                        default='checkpoints/fakes_dataset_SimpleNet_Adam.pt', type=str,
                         help='Path to model checkpoint.')
     parser.add_argument('--dataset', '-d',
                         default='fakes_dataset', type=str,
@@ -58,7 +69,25 @@ def get_soft_scores_and_true_labels(dataset, model):
         gt_labels: an iterable holding the samples' ground truth labels.
     """
     """INSERT YOUR CODE HERE, overrun return."""
-    return torch.rand(100, ), torch.rand(100, ), torch.randint(0, 2, (100, ))
+
+    all_first_soft_scores, all_second_soft_scores, gt_labels = [], [], []
+
+    dataloadr = DataLoader(dataset,
+                            batch_size=32,
+                            shuffle=False)
+    
+    with torch.no_grad():
+        for batch_idx, (inputs, targets) in enumerate(dataloadr):
+            pred = model(inputs)
+            gt_labels.append(targets.numpy())
+            # gt_labels_t += targets
+            soft_pred = softmax(pred)
+            all_first_soft_scores.append(soft_pred[:,0])
+            all_second_soft_scores.append(soft_pred[:,1])
+        
+        return all_first_soft_scores, all_second_soft_scores, gt_labels
+
+    # return torch.rand(100, ), torch.rand(100, ), torch.randint(0, 2, (100, ))
 
 
 def plot_roc_curve(roc_curve_figure,
