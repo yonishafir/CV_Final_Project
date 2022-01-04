@@ -79,11 +79,13 @@ def get_soft_scores_and_true_labels(dataset, model):
     with torch.no_grad():
         for batch_idx, (inputs, targets) in enumerate(dataloadr):
             pred = model(inputs)
-            gt_labels.append(targets.numpy())
-            # gt_labels_t += targets
-            soft_pred = softmax(pred)
-            all_first_soft_scores.append(soft_pred[:,0])
-            all_second_soft_scores.append(soft_pred[:,1])
+            #gt_labels.append(targets.numpy())
+
+            gt_labels += targets.tolist()
+            soft_pred = softmax(pred,dim=1)
+            #print(soft_pred)
+            all_first_soft_scores += (soft_pred[:,0].tolist())
+            all_second_soft_scores += (soft_pred[:,1].tolist())
         
         return all_first_soft_scores, all_second_soft_scores, gt_labels
 
