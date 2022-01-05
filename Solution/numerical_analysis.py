@@ -35,6 +35,7 @@ def parse_args():
     # parser.add_argument('--dataset', '-d',
     #                     default='fakes_dataset', type=str,
     #                     help='Dataset: fakes_dataset or synthetic_dataset.')
+    
     parser.add_argument('--model', '-m',
                         default='SimpleNet', type=str,
                         help='Model name: SimpleNet or XceptionBased.')
