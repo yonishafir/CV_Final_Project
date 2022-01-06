@@ -1,10 +1,11 @@
 """Hold all models you wish to train."""
+from functools import singledispatch
 import torch
 import torch.nn.functional as F
 
 from torch import nn
 
-from xcpetion import build_xception_backbone
+from xcpetion import Xception, build_xception_backbone
 
 
 class SimpleNet(nn.Module):
@@ -42,4 +43,17 @@ def get_xception_based_model() -> nn.Module:
     classification head stated in the exercise.
     """
     """INSERT YOUR CODE HERE, overrun return."""
-    return SimpleNet()
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+    SimpleNet = build_xception_backbone(pretrained=True)
+    for param in SimpleNet.parameters():
+        param.requires_grad = False
+    SimpleNet.fc = nn.Sequential(nn.Linear(2048,1000),
+                                nn.ReLU(),
+                                nn.Linear(1000,256),
+                                nn.ReLU(),
+                                nn.Linear(256,64),
+                                nn.ReLU(),
+                                nn.Linear(64,2))
+    return SimpleNet#()
+
