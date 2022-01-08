@@ -43,17 +43,20 @@ def get_xception_based_model() -> nn.Module:
     classification head stated in the exercise.
     """
     """INSERT YOUR CODE HERE, overrun return."""
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    SimpleNet = build_xception_backbone(pretrained=True)
-    for param in SimpleNet.parameters():
+    Xception_modified = build_xception_backbone(pretrained=True)
+    for param in Xception_modified.parameters():
         param.requires_grad = False
-    SimpleNet.fc = nn.Sequential(nn.Linear(2048,1000),
+    Xception_modified.fc = nn.Sequential(nn.Linear(2048,1000),
                                 nn.ReLU(),
                                 nn.Linear(1000,256),
                                 nn.ReLU(),
                                 nn.Linear(256,64),
                                 nn.ReLU(),
                                 nn.Linear(64,2))
-    return SimpleNet#()
+    Xception_modified.fc.requires_grad = True 
+    # Xception_modified.bn4.requires_grad = True 
+    # Xception_modified.conv4.requires_grad = True
+
+    return Xception_modified #()
 
