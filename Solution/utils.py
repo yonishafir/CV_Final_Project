@@ -7,6 +7,7 @@ from torchvision import transforms
 
 from faces_dataset import FacesDataset
 from models import SimpleNet, get_xception_based_model
+from bonus_model import  my_bonus_model #FIXME YUVAL
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -63,6 +64,7 @@ def load_model(model_name: str) -> nn.Module:
     models = {
         'SimpleNet': SimpleNet(),
         'XceptionBased': get_xception_based_model(),
+        'my_bonus_model': my_bonus_model()
     }
 
     if model_name not in models:

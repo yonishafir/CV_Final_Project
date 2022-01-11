@@ -8,6 +8,7 @@ from torch import nn
 from xcpetion import Xception, build_xception_backbone
 
 
+
 class SimpleNet(nn.Module):
     """Simple Convolutional and Fully Connect network."""
     def __init__(self):
@@ -56,4 +57,5 @@ def get_xception_based_model() -> nn.Module:
                                      nn.Linear(64, 2))
 
     return XceptionBased
+
 
