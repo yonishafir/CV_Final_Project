@@ -19,16 +19,7 @@ def my_bonus_model():
     #model = torch.hub.load('NVIDIA/DeepLearningExamples:torchhub', 'nvidia_efficientnet_b0', pretrained=True)
     model = models.mobilenet_v3_small(pretrained=True)
 
-
-    # model.fc = nn.Sequential(nn.Linear(2048, 1000),
-    #                                  nn.ReLU(),
-    #                                  nn.Linear(1000, 256),
-    #                                  nn.ReLU(),
-    #                                  nn.Linear(256, 64),
-    #                                  nn.ReLU(),
-    #                                  nn.Linear(64, 2))
-
-    model.fc = nn.Sequential(nn.Linear(1000, 256),
+    model.classifier = nn.Sequential(nn.Linear(576, 256),
                                      nn.ReLU(),
                                      nn.Linear(256, 64),
                                      nn.ReLU(),
@@ -38,4 +29,8 @@ def my_bonus_model():
     model.load_state_dict(torch.load('checkpoints/fakes_dataset_my_bonus_model_Adam.pt')['model'])
 
 
+
     return model
+
+
+
