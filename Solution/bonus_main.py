@@ -17,6 +17,7 @@ def main() -> tuple[float, int]:
 
     model = my_bonus_model()
 
+
     trainer = Trainer(model=model, optimizer=None,
                       criterion=nn.CrossEntropyLoss(), batch_size=16,
                       train_dataset=test_dataset,

@@ -64,7 +64,7 @@ def load_model(model_name: str) -> nn.Module:
     models = {
         'SimpleNet': SimpleNet(),
         'XceptionBased': get_xception_based_model(),
-        'my_bonus_model': my_bonus_model()
+        'my_bonus_model': my_bonus_model() #FIXME YUVAL - maybe remove line
     }
 
     if model_name not in models:
