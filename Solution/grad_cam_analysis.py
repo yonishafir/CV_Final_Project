@@ -13,6 +13,7 @@ from utils import load_dataset, load_model
 
 from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
+import cv2
 
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -55,16 +56,23 @@ def get_grad_cam_visualization(test_dataset: torch.utils.data.Dataset,
         of batch size 1, it's a tensor of shape (1,)).
     """
     """INSERT YOUR CODE HERE, overrun return."""
-    sample = DataLoader(test_dataset,batch_size=1, shuffle=True)
-    input_tensor, target = sample[0],sample[1]
-    #cam = GradCAM(model=model, target_layers=model.conv3, use_cuda=args.use_cuda)
-    cam = GradCAM(model=model, target_layers=model.conv3)
+    train_dataloader = DataLoader(test_dataset,batch_size=1, shuffle=True)
+    input_tensor, target = next(iter(train_dataloader))
+
+    cam = GradCAM(model=model, target_layers=[model.conv3])
+
+    grayscale_cam = cam(input_tensor=input_tensor)
+    grayscale_cam = grayscale_cam[0, :,:]
 
 
-    grayscale_cam = cam(input_tensor=input_tensor, target_category=target)
-    visualization = show_cam_on_image(input_tensor, grayscale_cam, use_rgb=True)
+    image_rgb = input_tensor.numpy()[0,:,:,:].transpose([1,2,0])
+    min_val =  np.min(np.min(image_rgb))
+    max_val = np.max(np.max(image_rgb))
+    image_scaled = (image_rgb - min_val) / (max_val - min_val)
 
-    return (visualization, target)
+    visualization = show_cam_on_image(image_scaled,  grayscale_cam, use_rgb=True)
+
+    return visualization, target
 
 
 def main():
