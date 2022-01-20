@@ -9,6 +9,7 @@ from xcpetion import Xception, build_xception_backbone
 
 
 
+
 class SimpleNet(nn.Module):
     """Simple Convolutional and Fully Connect network."""
     def __init__(self):
