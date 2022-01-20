@@ -5,6 +5,7 @@ from bonus_model import my_bonus_model
 from utils import load_dataset, get_nof_params
 
 
+
 def main() -> tuple[float, int]:
     """Load model and test dataset, evaluate model on dataset and report the
     number of model parameters.
@@ -16,7 +17,6 @@ def main() -> tuple[float, int]:
     test_dataset = load_dataset('fakes_dataset', 'test')
 
     model = my_bonus_model()
-
 
     trainer = Trainer(model=model, optimizer=None,
                       criterion=nn.CrossEntropyLoss(), batch_size=16,

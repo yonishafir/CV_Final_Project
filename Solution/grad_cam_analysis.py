@@ -61,11 +61,11 @@ def get_grad_cam_visualization(test_dataset: torch.utils.data.Dataset,
 
     cam = GradCAM(model=model, target_layers=[model.conv3])
 
-    grayscale_cam = cam(input_tensor=input_tensor)
-    grayscale_cam = grayscale_cam[0, :,:]
+    grayscale_cam = cam(input_tensor=input_tensor,target_category=target)
+    grayscale_cam = grayscale_cam[0]
 
 
-    image_rgb = input_tensor.numpy()[0,:,:,:].transpose([1,2,0])
+    image_rgb = torch.permute(input_tensor[0], (1, 2, 0)).cpu().detach().numpy()
     min_val =  np.min(np.min(image_rgb))
     max_val = np.max(np.max(image_rgb))
     image_scaled = (image_rgb - min_val) / (max_val - min_val)
