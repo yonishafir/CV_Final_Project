@@ -59,10 +59,6 @@ class Trainer:
                                       shuffle=True)
         print_every = int(len(train_dataloader) / 10)
 
-        # Added by me ## FIXME: Delete if not needed
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        # Added by me ##
-
         for batch_idx, (inputs, targets) in enumerate(train_dataloader):
             """INSERT YOUR CODE HERE."""
             inputs, targets = inputs.to(device), targets.to(device) 
@@ -84,7 +80,6 @@ class Trainer:
 
             avg_loss = total_loss/(batch_idx+1)#*self.batch_size)
 
-            # FIXME[yoni] accuaracy not calculated properlly
             accuracy = 100 * (correct_labeled_samples/nof_samples)
 
             if batch_idx % print_every == 0 or \

@@ -57,7 +57,9 @@ def get_grad_cam_visualization(test_dataset: torch.utils.data.Dataset,
     """
     """INSERT YOUR CODE HERE, overrun return."""
     train_dataloader = DataLoader(test_dataset,batch_size=1, shuffle=True)
+
     input_tensor, target = next(iter(train_dataloader))
+    input_tensor, target = input_tensor.to(device), target.to(device)
 
     cam = GradCAM(model=model, target_layers=[model.conv3])
 
