@@ -39,8 +39,10 @@ class FacesDataset(Dataset):
                     return (self.transform(im), 1)
                 else:
                     print("None value")
+        print("Index error, exiting...")
+        exit()
 
-        return torch.rand((3, 256, 256)), int(torch.randint(0, 2, size=(1, )))
+        # return torch.rand((3, 256, 256)), int(torch.randint(0, 2, size=(1, )))
 
     def __len__(self):
         """Return the number of images in the dataset."""

@@ -60,8 +60,9 @@ def get_grad_cam_visualization(test_dataset: torch.utils.data.Dataset,
 
     input_tensor, target = next(iter(train_dataloader))
     input_tensor, target = input_tensor.to(device), target.to(device)
+    model = model.to(device)
 
-    cam = GradCAM(model=model, target_layers=[model.conv3])
+    cam = GradCAM(model=model, target_layers=[model.conv3], use_cuda=torch.cuda.is_available())
 
     grayscale_cam = cam(input_tensor=input_tensor,target_category=target)
     grayscale_cam = grayscale_cam[0]
